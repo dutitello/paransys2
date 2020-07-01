@@ -1,0 +1,40 @@
+setup=
+*get,setup,
+codiam = 3.27
+diam = 3.14
+diamet = 15
+ diam=2
+!diam=3
+ !	diam =5
+   !diam=4
+	diam 	=    3.14
+ diamet  =  	15
+ diam=2
+
+dd = 3 ! diam=4
+dd = 3 !diam=4
+
+  2_diam=0
+  ! diam=4
+  
+    /clear,all
+   eof
+   clear
+   e of
+
+  diam		=    3.14
+ diamet   =   	diam	
+   diam   =2
+  a diam = 7
+  a diam=9
+  b_diam=0
+a=diam-6
+  *set, diam       ,dfsdgs
+	  *set, diam	, 		 f
+ !*set,diam,a
+ ! *set, diam, a
+  ! *set,diam,g
+*set, diame	,	2.58
+*set,codiam ,3.27
+if,diam,gt,4
+*get,diam,fill

@@ -4,7 +4,9 @@ The main class of the library
 
 import re 
 import os
-import utils
+import time
+import atexit
+import paransys2.utils as utils
 
 class ANSYS:
     """
@@ -24,6 +26,8 @@ class ANSYS:
             cleardir (bool, optional): clear all files in the working directory before running. Defaults to False.
             add_flags (str, optional): additional ANSYS execution flags. Do not use `-b -i -o`. Defaults to ''.
         """
+
+        atexit.register(self.exit)
 
         # Define default variables
         self._print = True
@@ -103,28 +107,41 @@ class ANSYS:
         utils.messages.cprint(self, f'   Location: {location}.')
 
 
-    def solve(self, **vars):
+    def solve(self, **parin):
         """
-        Solve ANSYS model with parameters set by **vars.
+        Solve ANSYS model with parameters set by **parin.
 
         Args:
-            **vars: each model parameter could be set separately or could be used a dictionary with all variables names and values passed as **dictname.
+            **parin: each model parameter could be set separately or could be used a dictionary with all variables names and values passed as **dictname.
 
         Returns:
             dict: An dictionary with all parameters values at the end of the analysis.
         """
         
         utils.ansys.start(self)
+        utils.messages.cprint(self, 'Setting solver.')
 
+        utils.files.write_parameters(self, 'par_in.paransys', parin)
+        utils.files.copy_model(self, parin)
 
-        parameters = {} 
+        utils.files.write_control(self, go=True)
+        utils.messages.cprint(self, 'Solving...')
+
+        tstart = time.time()
+        time.sleep(1)
+        while utils.files.read_control(self)['PARANSYS_DONE'] == 0:
+            time.sleep(1)
+
+        utils.messages.cprint(self, 'Solved! Elapsed time: {:.3f} minutes.'.format((time.time()-tstart)/60))
+        parameters = utils.files.read_parameters(self, 'par_out.paransys')
+
         return parameters
+        
 
 
-
-    def grad(self, dh=0.05, method='forward', **vars):
+    def grad(self, dh=0.05, method='forward', **parin):
         """
-        Evaluate the gradient of all parameters in relation to parameters set by **vars using the finite difference method.
+        Evaluate the gradient of all parameters in relation to parameters set by **parin using the finite difference method.
 
         There are 3 possible methods, in all it's adopted that: `h = x.dh`
 
@@ -145,7 +162,7 @@ class ANSYS:
         return grad
 
 
-    def close(self):
+    def exit(self):
         """
         Close ANSYS
         """

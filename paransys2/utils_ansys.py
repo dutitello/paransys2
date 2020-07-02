@@ -4,8 +4,8 @@ Useful function for ANSYS
 
 import re
 import os
-import utils
 import time
+import paransys2.utils as utils
 
 def find_exec(self):
     """
@@ -41,7 +41,7 @@ def start(self):
         utils.files.remove_control(self)
         utils.files.write_control(self)
         
-        flags = '  -b -i "monitor.paransys" -o "paransys.log" -smp -np {nproc} -j {jobname} -dir \"{run_location}\" {add_flags} '.format(**self._ANSYS)
+        flags = '  -b -i "monitor.paransys" -o "paransys.log.out" -smp -np {nproc} -j {jobname} -dir \"{run_location}\" {add_flags} '.format(**self._ANSYS)
         _ = os.spawnl(os.P_NOWAIT, self._ANSYS['exec_loc'], flags)
 
         count = 0

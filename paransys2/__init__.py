@@ -2,7 +2,7 @@
 A new version of PARANSYS library.
 """
 
-from ansys import *
+from paransys2.ansys import ANSYS
 from time import sleep
 
 if __name__ == '__main__':

@@ -4,8 +4,8 @@ Useful functions for files
 """
 import re
 import os
-import utils
 import shutil
+import paransys2.utils as utils
 
 def copy_model(self, parameters):
     """
@@ -23,12 +23,15 @@ def copy_model(self, parameters):
     for fname in modelfiles:
         fname = '{}\\{}'.format(self._model['location'], fname)
         try:
-            if is_text_file(fname):
+            f = open(fname, 'r')
+            f.close()
+        except:
+            utils.messages.cerror(self, f'PARANSYS couldn\'t copy \"{fname}\".')
+        else:
+            if is_text_file(fname) and len(parameters) > 0:
                 copy_and_filter_scripts(fname, destination, parameters)
             else:
                 shutil.copy(fname, destination)
-        except:
-            utils.messages.cerror(self, rf'PARANSYS couldn\'t copy \"{fname}\".')
 
     fname = f'{destination}\\main.paransys'
     with open(fname, 'w+') as f:
@@ -84,7 +87,7 @@ def copy_and_filter_scripts(fname, destination, parameters):
             f.write(line)
 
 
-def is_text(fname):
+def is_text_file(fname):
     """
     Test if a file is binary or text
 
@@ -158,8 +161,8 @@ def read_control(self):
             'PARANSYS_KILL': 0,
             'PARANSYS_RUNS': 0
         }
+        
     return parameters
-
 
 def write_parameters(self, fname, parameters):
     """
@@ -188,6 +191,17 @@ def read_parameters(self, fname):
     Returns:
         dict: Qith all parameters and their values.
     """
+
+    def str2num(strin):
+        try:
+            ans = float(strin)
+            if ans == int(ans):
+                ans = int(ans)
+        except:
+            ans = strin
+        return ans
+
+
     fname = '{}\\{}'.format(self._ANSYS['run_location'], fname)
 
     if not os.path.isfile(fname):
@@ -205,7 +219,7 @@ def read_parameters(self, fname):
         for line in content:
             result = patt1.search(line) or patt2.search(line)
             if result:
-                params[result.group(1)] = result.group(2)
+                params[result.group(1)] = str2num(result.group(2))
 
     return params
 

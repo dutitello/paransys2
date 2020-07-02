@@ -5,6 +5,7 @@ Useful function for ANSYS
 import re
 import os
 import utils
+import time
 
 def find_exec(self):
     """
@@ -31,7 +32,31 @@ def find_exec(self):
 
 
 def start(self):
-    pass
+    """
+    Start ANSYS if it isn't already running
+    """
+    
+    if not is_running(self):
+        utils.files.create_monitor(self)
+        utils.files.override_lockfile(self)
+        utils.files.write_control(self)
+        
+        flags = '-b -i monitor.paransys -o paransys.log -smp -np {nproc} -j {jobname} -dir \"{run_location}\" {add_flags} '.format(**self._ANSYS)
+        _ = os.spawnl(os.P_NOWAIT, self._ANSYS['exec_loc'], flags)
+    
+    #
+
+
+def kill(self):
+    """
+    Close ANSYS
+    """
+    while is_running(self):
+        utils.files.write_control(self, kill=True)
+        time.sleep(1)
+    else:
+        utils.messages.cprint(self, 'ANSYS closed.')
+
 
 
 def is_running(self):
@@ -55,7 +80,7 @@ def is_running(self):
         # The file doesn't exists or ANSYS not running
         f.close()
         # Look all .lock files in the folder
-        for fname in os.listdir():
+        for fname in os.listdir(self._ANSYS['run_location']):
             result = re.search(r'.*(?=\.lock)', fname, re.IGNORECASE)
             if result:
                 newjobname = result.group(0)

@@ -30,6 +30,10 @@ class ANSYS:
         self._print = True
         self._log = False
 
+        self._settings = {
+            'monitor_wait': 0.5 # Seconds
+        }
+
         # Define default model
         self._model = {
             'main': '',
@@ -63,21 +67,21 @@ class ANSYS:
         }
 
 
-    def setAPDLmodel(self, main, extrafiles=[], location=''):
+    def setAPDLmodel(self, main, extrafiles=[], location='.'):
         """
         Sets APDL model script and other necessary files.
 
         Args:
             main (str): main APDL script (who will run)
             extrafiles (list of strings, optional): list with files that will complete the model. Defaults to [].
-            location (str, optional): Folder where the main script and another files are. Defaults to '' (current folder).
+            location (str, optional): Folder where the main script and another files are. Defaults to '.' (current folder).
         """
 
         # Test location folder
         if location:
             if not os.path.isdir(location): 
                 utils.messages.cerror(self, f'PARANSYS could not access current model location folder ({location}).')
-
+        
         # Test all files
         curfile = f'{location}\\{main}'
         if not os.path.isfile(curfile):
@@ -98,14 +102,6 @@ class ANSYS:
         utils.messages.cprint(self, f'   Location: {location}.')
 
 
-    def _start(self):
-        """
-        Start ANSYS software if it isn't running yet.
-
-        """
-        pass
-
-
     def solve(self, **vars):
         """
         Solve ANSYS model with parameters set by **vars.
@@ -117,9 +113,7 @@ class ANSYS:
             dict: An dictionary with all parameters values at the end of the analysis.
         """
         
-        if not utils.ansys.is_running(self):
-            pass
-
+        utils.ansys.start(self)
 
 
         parameters = {} 

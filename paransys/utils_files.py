@@ -115,6 +115,7 @@ def create_monitor(self):
     fapdlmonitor = '{run_location}\\monitor.paransys'.format(**self._ANSYS)
     with open(fapdlmonitor, 'w') as f:
         f.write(monitorsource)
+    utils.messages.cprint(self, '   Monitor file created.')
 
 
 def write_control(self, go=False, kill=False):
@@ -127,19 +128,12 @@ def write_control(self, go=False, kill=False):
     """
     parameters = read_control(self)
 
-    if not parameters:
-        parameters = {
-            'PARANSYS_GO':   int(go),
-            'PARANSYS_DONE': 0,
-            'PARANSYS_KILL': int(kill),
-            'PARANSYS_RUNS': 0
-            }
-    else:
-        parameters['PARANSYS_GO']   = int(go)
-        parameters['PARANSYS_KILL'] = int(kill)
-        parameters['PARANSYS_DONE'] = 0
+    parameters['PARANSYS_GO']   = int(go)
+    parameters['PARANSYS_KILL'] = int(kill)
+    parameters['PARANSYS_DONE'] = 0 # Always
     
     write_parameters(self, 'control.paransys', parameters)
+    utils.messages.cprint(self, '   Command sent.')
 
 
 def read_control(self):
@@ -152,10 +146,17 @@ def read_control(self):
     parameters = read_parameters(self, 'control.paransys')
     if parameters:
         parameters = {
-            'go':   bool(parameters['PARANSYS_GO']),
-            'done': bool(parameters['PARANSYS_DONE']),
-            'kill': bool(parameters['PARANSYS_KILL']),
-            'runs':  int(parameters['PARANSYS_RUNS'])
+            'PARANSYS_GO':   bool(parameters['PARANSYS_GO']),
+            'PARANSYS_DONE': bool(parameters['PARANSYS_DONE']),
+            'PARANSYS_KILL': bool(parameters['PARANSYS_KILL']),
+            'PARANSYS_RUNS':  int(parameters['PARANSYS_RUNS'])
+        }
+    else:
+        parameters = {
+            'PARANSYS_GO':   0,
+            'PARANSYS_DONE': 0,
+            'PARANSYS_KILL': 0,
+            'PARANSYS_RUNS': 0
         }
     return parameters
 
@@ -209,16 +210,11 @@ def read_parameters(self, fname):
     return params
 
 
-def override_lockfile(self):
+def remove_control(self):
     """
-    Look for and override jobname lockfile
+    Remove PARANSYS control file
     """
-    if self._ANSYS['override']:
-        lockfile = '{run_location}\\{jobname}.lock'.format(**self._ANSYS)
-        try:
-            os.path.isfile(lockfile)
-        except:
-            pass
-        else:
-            os.remove(lockfile)
-            utils.messages.cprint(self, 'Lockfile removed.')
+    controlfile = '{run_location}\\control.paransys'.format(**self._ANSYS)
+    if os.path.isfile(controlfile):
+        os.remove(controlfile)
+        utils.messages.cprint(self, '   Control file removed.')

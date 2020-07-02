@@ -12,7 +12,7 @@ class ANSYS:
      
     """
     
-    def __init__(self, exec_loc=None, run_location='.\\workingdir', jobname='file', nproc=2, override=True, cleardir=False, add_flags=''):
+    def __init__(self, exec_loc=None, run_location='.\\workingdir', jobname='file', nproc=2, cleardir=False, add_flags=''):
         """
         Configure the connection betwen Python and ANSYS setting ANSYS configuration.
 
@@ -21,7 +21,6 @@ class ANSYS:
             run_location (str, optional): Folder where ANSYS will work. Defaults to '.\\workingdir\\'.
             jobname (str, optional): ANSYS jobname. Defaults to 'file'.
             nproc (int, optional): number of processor cores used. Defaults to 2.
-            override (bool, optional): erase possible .lock file in the working directory. Defaults to True.
             cleardir (bool, optional): clear all files in the working directory before running. Defaults to False.
             add_flags (str, optional): additional ANSYS execution flags. Do not use `-b -i -o`. Defaults to ''.
         """
@@ -31,7 +30,10 @@ class ANSYS:
         self._log = False
 
         self._settings = {
-            'monitor_wait': 0.5 # Seconds
+            'monitor_wait':     0.5,    # Seconds
+            'starter_max_wait':  30,    # Seconds
+            'starter_sleep':    1.0     # Seconds
+
         }
 
         # Define default model
@@ -57,11 +59,10 @@ class ANSYS:
 
         # Save ANSYS configuration
         self._ANSYS = {
-            'exec': exec_loc,
+            'exec_loc': exec_loc,
             'run_location': run_location,
             'jobname': jobname,
             'nproc': nproc,
-            'override': override,
             'cleardir': cleardir,
             'add_flags': add_flags
         }
@@ -144,3 +145,8 @@ class ANSYS:
         return grad
 
 
+    def close(self):
+        """
+        Close ANSYS
+        """
+        utils.ansys.kill(self)

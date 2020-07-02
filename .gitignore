@@ -2,3 +2,6 @@
 *.db
 *.err
 *.log
+*.page
+*.lock
+file.bat

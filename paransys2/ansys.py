@@ -139,19 +139,17 @@ class ANSYS:
         
 
 
-    def grad(self, dh=0.05, method='forward', **parin):
+    def grad(self, dh=0.05, method='forward', onlyfor=[], notfor=[], **parin):
         """
-        Evaluate the gradient of all output parameters in relation to parameters set as input (see solve function instructions) using the finite difference method.
+        Evaluate the gradient of all output parameters in relation to input parameters using the finite difference method.
 
-        The gradient returned is in the form `grad('parameter','variable')`, that is, the variation of `parameter` in relation to `variable`. 
-        
-        Some examples are:
-        > `dy/dx` = `y'(x)` = `grad('y','x')`
-
-        > `dStress/dh` = `Stress'(h)` = `grad('Stress','h')`
+        By default the gradient is evaluate in relation of all input parameters, if you need to evaluate just for some specific
+        parameters you can put it's names in `onlyfor` list. In the other hand, if you need all but not for some 
+        specific you can put it's name on `notfor` list. It looks confuse, I know... So there are more explanations  
+        and examples at `/examples/grad.ipynb`.
 
 
-        There are 3 possible methods, in all it's adopted that: `h = x.dh`
+        There are 3 possible difference methods here, in all it's adopted that: `h = x.dh`
 
         The forward method: `f\'(x) = (f(x+h)-f(x))/h`
 
@@ -164,17 +162,42 @@ class ANSYS:
         Args:
             dh (float, optional): Relative step size in relation to the variable value. Defaults to 0.05.
             method (str, optional): Finite difference method. Defaults to 'forward'.
+            onlyfor (list of strings, optional): A list with the exclusive parameters that model will be derivated for.
+            notfor (list of strings, optional): A list with the parameters that model will not be derivated for.
             **parin (dict): each model parameter in the form `name=value` or a dictionary with names and values set by **parin.
 
         Returns:
             dict: A dictionary with the gradient of all output parameters in relation to here inputed parameters.
+
+        The gradient returned is in the form `grad('parameter','variable')`, that is, the variation of `parameter` in relation to `variable`. 
+        
+        Some examples are:
+        > `dy/dx` = `y'(x)` = `grad('y','x')`
+
+        > `dStress/dh` = `Stress'(h)` = `grad('Stress','h')`
+
         """
 
         # Everything need to be in UPPER CASE or it will be a mess
-        parin = utils.anothers.dict_to_upper(parin)
+        parin = utils.anothers.to_upper(parin)
+        onlyfor = utils.anothers.to_upper(onlyfor)
+        notfor = utils.anothers.to_upper(notfor)
+
         tstart = time.time()
         utils.messages.cprint(self, f'Evaluating gradient using {method} method and dh={dh}.')
-
+        
+        if len(onlyfor) > 0:
+            evalfor = onlyfor.copy()
+        else:
+            evalfor = []
+            for parameter in parin:
+                evalfor.append(parameter)
+        if len(notfor) > 0:
+            for parameter in notfor:
+                if parameter in evalfor:
+                    evalfor.remove(parameter)
+        utils.messages.cprint(self, 'Evaluating gradient in relation to: {}.'.format(', '.join(evalfor)))
+        
         # h couldn't be 0
         def hnotnull(par):
             if par == 0.00: par = 1
@@ -187,7 +210,7 @@ class ANSYS:
             utils.messages.cprint(self, 'Solving base function.')
             base = self.solve(**parin)
             grad = base.copy() # Append f(x)
-            for parameter in parin:
+            for parameter in evalfor:
                 parcur = parin.copy()
                 h = hnotnull(parin[parameter])
                 parcur[parameter] += h
@@ -195,13 +218,13 @@ class ANSYS:
                 this = self.solve(**parcur)
                 for each in this:
                     grad[each, parameter] = (this[each]-base[each])/h
-                utils.anothers.grad_progress(self, parameter, parin)
+                utils.anothers.grad_progress(self, parameter, evalfor)
 
 
         # Central method
         elif method == 'central':
             grad = {}
-            for parameter in parin:
+            for parameter in evalfor:
                 parinf = parin.copy()
                 parsup = parin.copy()
                 h = hnotnull(parin[parameter])
@@ -213,7 +236,7 @@ class ANSYS:
                 major = self.solve(**parsup)
                 for each in minor:
                     grad[each, parameter] = (major[each]-minor[each])/h
-                utils.anothers.grad_progress(self, parameter, parin)
+                utils.anothers.grad_progress(self, parameter, evalfor)
 
         # Sometimes life isn't like we expect   
         else:

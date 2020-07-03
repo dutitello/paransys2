@@ -109,10 +109,10 @@ class ANSYS:
 
     def solve(self, **parin):
         """
-        Solve ANSYS model with parameters set by **parin.
+        Solve ANSYS model with parameters set as `solve(parA=1, B=2, c=5)` or by a dictionary with names and values set by **parin.
 
         Args:
-            **parin: each model parameter could be set separately or could be used a dictionary with all variables names and values passed as **dictname.
+            **parin (dict): each model parameter in the form `name=value` or a dictionary with names and values set by **parin.
 
         Returns:
             dict: An dictionary with all parameters values at the end of the analysis.
@@ -121,19 +121,19 @@ class ANSYS:
         utils.ansys.start(self)
         utils.messages.cprint(self, 'Setting solver.')
 
-        utils.files.write_parameters(self, 'par_in.paransys', parin)
+        utils.files.write_parin(self, parin)
         utils.files.copy_model(self, parin)
 
         utils.files.write_control(self, go=True)
-        utils.messages.cprint(self, 'Solving...')
+        utils.messages.cprint(self, '   Solving...')
 
         tstart = time.time()
         time.sleep(1)
         while utils.files.read_control(self)['PARANSYS_DONE'] == 0:
             time.sleep(1)
 
-        utils.messages.cprint(self, 'Solved! Elapsed time: {:.3f} minutes.'.format((time.time()-tstart)/60))
-        parameters = utils.files.read_parameters(self, 'par_out.paransys')
+        utils.messages.cprint(self, 'Solved in {:.3f} minutes.'.format((time.time()-tstart)/60))
+        parameters = utils.files.read_parout(self)
 
         return parameters
         
@@ -141,7 +141,15 @@ class ANSYS:
 
     def grad(self, dh=0.05, method='forward', **parin):
         """
-        Evaluate the gradient of all parameters in relation to parameters set by **parin using the finite difference method.
+        Evaluate the gradient of all output parameters in relation to parameters set as input (see solve function instructions) using the finite difference method.
+
+        The gradient returned is in the form `grad('parameter','variable')`, that is, the variation of `parameter` in relation to `variable`. 
+        
+        Some examples are:
+        > `dy/dx` = `y'(x)` = `grad('y','x')`
+
+        > `dStress/dh` = `Stress'(h)` = `grad('Stress','h')`
+
 
         There are 3 possible methods, in all it's adopted that: `h = x.dh`
 
@@ -151,14 +159,63 @@ class ANSYS:
 
         The central method: `f\'(x) = (f(x+h/2)-f(x-h/2))/h`
 
+        The forward and backward methods need to evaluate the function at `f(x)`, so in this cases this result is appendend in the dictionary.
+
         Args:
             dh (float, optional): Relative step size in relation to the variable value. Defaults to 0.05.
-            method (str, optional): [description]. Defaults to 'forward'.
+            method (str, optional): Finite difference method. Defaults to 'forward'.
+            **parin (dict): each model parameter in the form `name=value` or a dictionary with names and values set by **parin.
 
         Returns:
-            dict: [description]
+            dict: A dictionary with the gradient of all output parameters in relation to here inputed parameters.
         """
-        grad = {}
+
+        # Everything need to be in UPPER CASE or it will be a mess
+        parin = utils.anothers.dict_to_upper(parin)
+        tstart = time.time()
+        utils.messages.cprint(self, f'Evaluating gradient using {method} method and dh={dh}.')
+
+        # Forward and Backward is the same thing just change dh to negative
+        if method in ['forward', 'backward']:
+            if method == 'backward': dh = -dh
+            # base = f(x)
+            utils.messages.cprint(self, 'Solving base function.')
+            base = self.solve(**parin)
+            grad = base.copy() # Append for f(x)
+            for parameter in parin:
+                parcur = parin.copy()
+                h = dh*parin[parameter]
+                parcur[parameter] += h
+                utils.messages.cprint(self, f'Solving for {parameter}.')
+                this = self.solve(**parcur)
+                for each in this:
+                    grad[each, parameter] = (this[each]-base[each])/h
+
+
+        # Central method
+        elif method == 'central':
+            grad = {}
+            for parameter in parin:
+                parinf = parin.copy()
+                parsup = parin.copy()
+                h = dh*parin[parameter]
+                parinf[parameter] -= h/2
+                parsup[parameter] += h/2
+                utils.messages.cprint(self, f'Solving minor limit for {parameter}.')
+                minor = self.solve(**parinf)
+                utils.messages.cprint(self, f'Solving major limit for {parameter}.')
+                major = self.solve(**parsup)
+                for each in minor:
+                    grad[each, parameter] = (major[each]-minor[each])/h
+
+
+        # Sometimes life isn't like we expect   
+        else:
+            utils.messages.cerror(self, f"The {method} method isn\'t supported.")
+
+
+        # Thats the end    
+        utils.messages.cprint(self, 'Gradient evaluated in {:.3f} minutes.'.format((time.time()-tstart)/60))
         return grad
 
 

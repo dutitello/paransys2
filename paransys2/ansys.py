@@ -175,6 +175,11 @@ class ANSYS:
         tstart = time.time()
         utils.messages.cprint(self, f'Evaluating gradient using {method} method and dh={dh}.')
 
+        # h couldn't be 0
+        def hnotnull(par):
+            if par == 0.00: par = 1
+            return dh*par
+
         # Forward and Backward is the same thing just change dh to negative
         if method in ['forward', 'backward']:
             if method == 'backward': dh = -dh
@@ -184,12 +189,13 @@ class ANSYS:
             grad = base.copy() # Append f(x)
             for parameter in parin:
                 parcur = parin.copy()
-                h = dh*parin[parameter]
+                h = hnotnull(parin[parameter])
                 parcur[parameter] += h
                 utils.messages.cprint(self, f'Solving for {parameter}.')
                 this = self.solve(**parcur)
                 for each in this:
                     grad[each, parameter] = (this[each]-base[each])/h
+                utils.anothers.grad_progress(self, parameter, parin)
 
 
         # Central method
@@ -198,7 +204,7 @@ class ANSYS:
             for parameter in parin:
                 parinf = parin.copy()
                 parsup = parin.copy()
-                h = dh*parin[parameter]
+                h = hnotnull(parin[parameter])
                 parinf[parameter] -= h/2
                 parsup[parameter] += h/2
                 utils.messages.cprint(self, f'Solving minor limit for {parameter}.')
@@ -207,7 +213,7 @@ class ANSYS:
                 major = self.solve(**parsup)
                 for each in minor:
                     grad[each, parameter] = (major[each]-minor[each])/h
-
+                utils.anothers.grad_progress(self, parameter, parin)
 
         # Sometimes life isn't like we expect   
         else:

@@ -52,24 +52,29 @@ def copy_and_filter_scripts(fname, destination, parameters):
         RuntimeError: [description]
     """
 
+    # Keys for simple lines
     # Commands that assigns values to variables in the form "command,variable,..."
-    keys_assigns = [r'\*set,', r'\*get,', r'\*del,']
+    keys_line_assigns = [r'\*set', r'\*get', r'\*del', r'\*dim']
     # Commands that could bug the code, like /exit and /clear
-    keys_forbidden = ['/clear', 'eof', '/exit', r'\*ask']
-
+    keys_line_forbidden = ['/clear', 'eof', '/exit', r'\*ask']
     # Join each key group 
-    pattKeys = {
+    pattLineKeys = {
         'parameters':   '|'.join(parameters),
-        'assigns':      '|'.join(keys_assigns),
-        'forbidden':    '|'.join(keys_forbidden)
+        'assigns':      '|'.join(keys_line_assigns),
+        'forbidden':    '|'.join(keys_line_forbidden)
     }
 
-    # Compile the regex pattern
-        # The first patch ^[^!]* run until found a ! (comment), after it doesn't matter to ANSYS
-        # The seccond patch ((?<=({assigns}))\s*({parameters})\s*(?=,)) looks for "{assigns},{parameters},"
-        # The third patch ((?<![a-zA-Z_0-9])\s*({parameters})\s*(?=[=+]))) looks for "{parameters}=value"
-        # The fourth patch ({2}) looks for {forbidden} commands, like /clear, /exit
-    patt = re.compile(r"^[^!]*(((?<=({assigns}))\s*({parameters})\s*(?=,))|((?<![a-zA-Z_0-9])\s*({parameters})\s*(?=[=+]))|({forbidden}))".format(**pattKeys), flags=re.IGNORECASE)
+    # Keys for multiple lines
+    # for *PREAD,...,END PREAD : 
+    # r"^[^!]*((?<=(\*PREAD))\s*,\s*(ARRAY3D|ARRAY2D)\s*,(.|\n)*(?=(END PREAD)))"
+    # 
+
+    # Compile the regex patterns 
+    # 
+    # Old pattern
+    #pattLine = re.compile(r"^[^!]*(((?<=({assigns}))\s*({parameters})\s*(?=,))|((?<![a-zA-Z_0-9])\s*({parameters})\s*(?=[=+]))|({forbidden}))".format(**pattLineKeys), flags=re.IGNORECASE)
+    pattLine = re.compile(r"^[^!]*((?<![\w])({parameters})(?![\w])\s*\=|(?<=({assigns}))\s*,\s*({parameters})\s*,|({forbidden}))".format(**pattLineKeys), flags=re.IGNORECASE)
+    #pattMulti = re.compile(r"", flags=re.IGNORECASE)
 
     # Read original script file
     with open(fname, 'r') as f:
@@ -82,7 +87,7 @@ def copy_and_filter_scripts(fname, destination, parameters):
     with open(f'{destination}\\{scriptname}', 'w') as f:
         for line in script:
             # If matchs make it's conent a comment
-            if patt.search(line):
+            if pattLine.search(line):
                 f.write('! Line Removed by PARANSYS, old content: ')
             f.write(line)
 
@@ -164,6 +169,19 @@ def read_control(self):
         
     return parameters
 
+
+def write_parin(self, parameters):
+    """
+    Write input parameters
+
+    Args:
+        parameters (dict): dictionary with parameters and it's values.
+    """
+    self._parin = parameters
+    fname = 'par_in.paransys'
+    write_parameters(self, fname, parameters)
+
+
 def write_parameters(self, fname, parameters):
     """
     Create the file with input parameters values
@@ -179,6 +197,22 @@ def write_parameters(self, fname, parameters):
             f.write(line)
 
 
+def read_parout(self):
+    """
+    Read and verify output parameters.
+
+    Returns:
+        dict: With all parameters and their values.
+    """
+    parout = read_parameters(self, 'par_out.paransys')
+    parin  = self._parin
+    for par in parin:
+        if parin[par] != parout[par.upper()]:
+            msg = '** Input parameter \"{}\" was set as \"{}\" but finished as \"{}\". It should not happen, please verify it!'.format(par, parin[par], parout[par.upper()])
+            utils.messages.cprint(self, msg)
+    return parout
+
+
 def read_parameters(self, fname):
     """
     Read and interpret parameters from files. 
@@ -189,7 +223,7 @@ def read_parameters(self, fname):
         fname (str): File to import parameters
 
     Returns:
-        dict: Qith all parameters and their values.
+        dict: With all parameters and their values.
     """
 
     def str2num(strin):

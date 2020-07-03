@@ -181,7 +181,7 @@ class ANSYS:
             # base = f(x)
             utils.messages.cprint(self, 'Solving base function.')
             base = self.solve(**parin)
-            grad = base.copy() # Append for f(x)
+            grad = base.copy() # Append f(x)
             for parameter in parin:
                 parcur = parin.copy()
                 h = dh*parin[parameter]
@@ -211,7 +211,7 @@ class ANSYS:
 
         # Sometimes life isn't like we expect   
         else:
-            utils.messages.cerror(self, f"The {method} method isn\'t supported.")
+            utils.messages.cerror(self, "Unkown method.")
 
 
         # Thats the end    

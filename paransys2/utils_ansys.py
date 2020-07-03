@@ -41,7 +41,7 @@ def start(self):
         utils.files.remove_control(self)
         utils.files.write_control(self)
         
-        flags = '  -b -i "monitor.paransys" -o "paransys.log.out" -smp -np {nproc} -j {jobname} -dir \"{run_location}\" {add_flags} '.format(**self._ANSYS)
+        flags = '  -b -i \"{run_location}\\monitor.paransys\" -o \"{run_location}\\paransys.ansys.log\" -smp -np {nproc} -j {jobname} -dir \"{run_location}\" {add_flags} '.format(**self._ANSYS)
         _ = os.spawnl(os.P_NOWAIT, self._ANSYS['exec_loc'], flags)
 
         count = 0

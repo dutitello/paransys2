@@ -248,8 +248,8 @@ def read_parameters(self, fname):
         utils.messages.cerror(self, f'PARANSYS cannot open \"{fname}\".')
     else:
         params = {}
-        patt1 = re.compile(r'([\w]+)\s*\=\s*([0-9\.]+)', re.IGNORECASE)
-        patt2 = re.compile(r'(?<=\*SET,)\s*([\w]+)\s*,\s*([0-9\.]+)', re.IGNORECASE)
+        patt1 = re.compile(r'([\w]+)\s*\=\s*([0-9\.\-ED]+)', re.IGNORECASE)
+        patt2 = re.compile(r'(?<=\*SET,)\s*([\w]+)\s*,\s*([0-9\.\-ED]+)', re.IGNORECASE)
         for line in content:
             result = patt1.search(line) or patt2.search(line)
             if result:

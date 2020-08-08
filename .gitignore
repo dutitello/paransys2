@@ -5,3 +5,6 @@
 *.page
 *.lock
 file.bat
+/__pycache__/*
+.vscode/*
+/workingdir/*

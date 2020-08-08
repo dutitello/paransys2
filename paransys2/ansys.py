@@ -107,21 +107,25 @@ class ANSYS:
         utils.messages.cprint(self, f'   Location: {location}.')
 
 
-    def solve(self, **parin):
+    def solve(self, P26vars=[], **parin):
         """
         Solve ANSYS model with parameters set as `solve(parA=1, B=2, c=5)` or by a dictionary with names and values set by **parin.
 
         Args:
-            **parin (dict): each model parameter in the form `name=value` or a dictionary with names and values set by **parin.
+            **parin (dict): each model parameter in the form `name=value` or a dictionary with names and values set by **dictname. 
+            P26vars (list of integers): A list of POST26 (time history postproccess) variables numbers. This POST26 variables will be exported in a pandas.DataFrame.
+            
 
         Returns:
             dict: An dictionary with all parameters values at the end of the analysis.
+            pandas.DataFrame: A pandas DataFrame with asked POST26 variables.
         """
         
         utils.ansys.start(self)
         utils.messages.cprint(self, 'Setting solver.')
 
         utils.files.write_parin(self, parin)
+        utils.files.write_ask_post26(self, P26vars)
         utils.files.copy_model(self, parin)
 
         utils.files.write_control(self, go=True)
@@ -133,11 +137,15 @@ class ANSYS:
             time.sleep(1)
 
         utils.messages.cprint(self, 'Solved in {:.3f} minutes.'.format((time.time()-tstart)/60))
-        parameters = utils.files.read_parout(self)
-
-        return parameters
         
+        parameters = utils.files.read_parout(self)
+        if len(P26vars) > 0:
+            p26df = utils.files.read_post26(self)
+        else:
+            p26df = None
 
+        return parameters, p26df
+        
 
     def grad(self, dh=0.05, method='forward', onlyfor=[], notfor=[], **parin):
         """
@@ -208,14 +216,14 @@ class ANSYS:
             if method == 'backward': dh = -dh
             # base = f(x)
             utils.messages.cprint(self, 'Solving base function.')
-            base = self.solve(**parin)
+            base, _ = self.solve(**parin)
             grad = base.copy() # Append f(x)
             for parameter in evalfor:
                 parcur = parin.copy()
                 h = hnotnull(parin[parameter])
                 parcur[parameter] += h
                 utils.messages.cprint(self, f'Solving for {parameter}.')
-                this = self.solve(**parcur)
+                this, _ = self.solve(**parcur)
                 for each in this:
                     grad[each, parameter] = (this[each]-base[each])/h
                 utils.anothers.grad_progress(self, parameter, evalfor)
@@ -231,9 +239,9 @@ class ANSYS:
                 parinf[parameter] -= h/2
                 parsup[parameter] += h/2
                 utils.messages.cprint(self, f'Solving minor limit for {parameter}.')
-                minor = self.solve(**parinf)
+                minor, _ = self.solve(**parinf)
                 utils.messages.cprint(self, f'Solving major limit for {parameter}.')
-                major = self.solve(**parsup)
+                major, _ = self.solve(**parsup)
                 for each in minor:
                     grad[each, parameter] = (major[each]-minor[each])/h
                 utils.anothers.grad_progress(self, parameter, evalfor)

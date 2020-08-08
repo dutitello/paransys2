@@ -5,6 +5,7 @@ Useful functions for files
 import re
 import os
 import shutil
+import pandas 
 import paransys2.utils as utils
 
 def copy_model(self, parameters):
@@ -118,8 +119,8 @@ def create_monitor(self):
         "main": 'main.paransys',
         "wait": self._settings['monitor_wait']
     }
-    monitorsource = "/NOPR\n*CREATE,rewctrl.paransys\n/OUTPUT,control,paransys\n*VWRITE,'PARANSYS_GO=%PARANSYS_GO%'\n%C\n*VWRITE,'PARANSYS_RUNS=%PARANSYS_RUNS%'\n%C\n*VWRITE,'PARANSYS_DONE=%PARANSYS_DONE%'\n%C\n*VWRITE,'PARANSYS_KILL=%PARANSYS_KILL%'\n%C\n/OUTPUT\n*END\nPARANSYS_LOOP=1\nPARANSYS_RUNS=0\n*DOWHILE,PARANSYS_LOOP\n/INPUT,control.paransys\n*IF,PARANSYS_GO,GE,1,THEN\nPARANSYS_GO=0\nPARANSYS_RUNS=PARANSYS_RUNS\nPARANSYS_DONE=0\nPARANSYS_KILL=0\n/INPUT,rewctrl,paransys\n/DELETE,par_out.paransys,,,BOTH\n/CLEAR,start.ans\n/INPUT,par_in.paransys\n/GOPR\n/INPUT,{main}\n/NOPR\nPARSAV,ALL,par_out.paransys\n/INPUT,control.paransys\nPARANSYS_GO=0\nPARANSYS_RUNS=PARANSYS_RUNS+1\nPARANSYS_DONE=1\nPARANSYS_KILL=0\n/INPUT,rewctrl,paransys\n*ELSEIF,PARANSYS_KILL,GE,1,THEN\n/DELETE,control.paransys,,,BOTH\n*EXIT\n*ENDIF\nPARANSYS_LOOP=1\n/WAIT,{wait}\n*ENDDO"
-    monitorsource = monitorsource.format(**monitor)
+    
+    monitorsource = utils.anothers.monitor_apdl.format(**monitor)
     fapdlmonitor = '{run_location}\\monitor.paransys'.format(**self._ANSYS)
     with open(fapdlmonitor, 'w') as f:
         f.write(monitorsource)
@@ -226,16 +227,6 @@ def read_parameters(self, fname):
         dict: With all parameters and their values.
     """
 
-    def str2num(strin):
-        try:
-            ans = float(strin)
-            if ans == int(ans):
-                ans = int(ans)
-        except:
-            ans = strin
-        return ans
-
-
     fname = '{}\\{}'.format(self._ANSYS['run_location'], fname)
 
     if not os.path.isfile(fname):
@@ -253,7 +244,7 @@ def read_parameters(self, fname):
         for line in content:
             result = patt1.search(line) or patt2.search(line)
             if result:
-                params[result.group(1)] = str2num(result.group(2))
+                params[result.group(1)] = utils.anothers.str2num(result.group(2))
 
     return params
 
@@ -266,3 +257,61 @@ def remove_control(self):
     if os.path.isfile(controlfile):
         os.remove(controlfile)
         utils.messages.cprint(self, '   Control file removed.')
+
+
+def write_ask_post26(self, p26vars):
+    """
+    Write 'rP26.paransys' that ask ANSYS for selected POST26 variables.
+
+    """
+    fname = 'rP26.paransys'
+    fname = '{}\\{}'.format(self._ANSYS['run_location'], fname)
+
+    if len(p26vars) > 0:
+        if 1 not in p26vars:
+            p26vars = [1]+p26vars
+
+        with open(fname, 'w') as f:
+            f.write('P26EXP.paransys,0\n')
+            for var in p26vars:
+                f.write('P26EXP.paransys,{}\n'.format(int(var)))
+            f.write('/DELETE,rP26.paransys\n')
+
+
+def read_post26(self):
+    """
+    Read the POST26 exported variables.
+
+    Returns:
+        pandas.DataFrame: With all asked POST26 variables plus var 1 (time) as index.
+    """
+
+    fname = 'P26_out.paransys'
+    fname = '{}\\{}'.format(self._ANSYS['run_location'], fname)
+
+    try:
+        with open(fname, 'r') as f:
+            content = f.readlines()
+    except:
+        p26df = pandas.DataFrame({})
+    else:
+        patt_beg = re.compile(r'(?<=\*P26VAR)\s*=\s*(\w+)\s*(?=\\n)*', re.IGNORECASE)
+        patt_end = re.compile(r'(\*P26END)', re.IGNORECASE)
+        varoppened = False 
+        p26values = {}
+        for line in content:
+            sbeg = patt_beg.search(line)
+            if sbeg:
+                varnum = utils.anothers.str2num(sbeg.group(1))
+                p26values[varnum] = []
+                varoppened = True
+            elif patt_end.search(line):
+                varoppened = False
+            elif varoppened == True:
+                p26values[varnum].append(utils.anothers.str2num(line))
+
+        p26df = pandas.DataFrame(p26values)
+        p26df.rename(columns={1: 'Time'}, inplace=True)
+        p26df.set_index('Time', inplace=True)
+
+    return p26df

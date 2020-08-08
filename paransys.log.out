@@ -1,0 +1,887 @@
+
+ ANSYS Mechanical Enterprise                       
+
+
+ *------------------------------------------------------------------*
+ |                                                                  |
+ |   W E L C O M E   T O   T H E   A N S Y S (R)  P R O G R A M     |
+ |                                                                  |
+ *------------------------------------------------------------------*
+
+
+
+
+ ***************************************************************
+ *            ANSYS 2019 R2          LEGAL NOTICES             *
+ ***************************************************************
+ *                                                             *
+ * Copyright 1971-2019 ANSYS, Inc.  All rights reserved.       *
+ * Unauthorized use, distribution or duplication is            *
+ * prohibited.                                                 *
+ *                                                             *
+ * Ansys is a registered trademark of ANSYS, Inc. or its       *
+ * subsidiaries in the United States or other countries.       *
+ * See the ANSYS, Inc. online documentation or the ANSYS, Inc. *
+ * documentation CD or online help for the complete Legal      *
+ * Notice.                                                     *
+ *                                                             *
+ ***************************************************************
+ *                                                             *
+ * THIS ANSYS SOFTWARE PRODUCT AND PROGRAM DOCUMENTATION       *
+ * INCLUDE TRADE SECRETS AND CONFIDENTIAL AND PROPRIETARY      *
+ * PRODUCTS OF ANSYS, INC., ITS SUBSIDIARIES, OR LICENSORS.    *
+ * The software products and documentation are furnished by    *
+ * ANSYS, Inc. or its subsidiaries under a software license    *
+ * agreement that contains provisions concerning               *
+ * non-disclosure, copying, length and nature of use,          *
+ * compliance with exporting laws, warranties, disclaimers,    *
+ * limitations of liability, and remedies, and other           *
+ * provisions.  The software products and documentation may be *
+ * used, disclosed, transferred, or copied only in accordance  *
+ * with the terms and conditions of that software license      *
+ * agreement.                                                  *
+ *                                                             *
+ * ANSYS, Inc. is a UL registered                              *
+ * ISO 9001:2015 company.                                      *
+ *                                                             *
+ ***************************************************************
+ *                                                             *
+ * This product is subject to U.S. laws governing export and   *
+ * re-export.                                                  *
+ *                                                             *
+ * For U.S. Government users, except as specifically granted   *
+ * by the ANSYS, Inc. software license agreement, the use,     *
+ * duplication, or disclosure by the United States Government  *
+ * is subject to restrictions stated in the ANSYS, Inc.        *
+ * software license agreement and FAR 12.212 (for non-DOD      *
+ * licenses).                                                  *
+ *                                                             *
+ ***************************************************************
+
+ 2019 R2 
+     
+ Point Releases and Patches installed:   
+     
+ ANSYS, Inc. Products 2019 R2
+ SpaceClaim 2019 R2  
+ Customization Files for User Programmable Features 2019 R2  
+ Mechanical Products 2019 R2 
+ ANSYS, Inc. License Manager 2019 R2 
+
+
+          *****  ANSYS COMMAND LINE ARGUMENTS  *****
+  INITIAL JOBNAME              = file                                                                                                                                                                                                                                                    
+  BATCH MODE REQUESTED (-b)    = LIST
+  INPUT FILE COPY MODE (-c)    = COPY
+  SHARED MEMORY PARALLEL REQUESTED
+    SINGLE PROCESS WITH   2 THREADS REQUESTED
+    TOTAL OF     2 CORES REQUESTED
+  INPUT FILE NAME              = C:\Programacao\_MinhasBibliotecas\paransys2\workingdir\monitor.paransys
+  OUTPUT FILE NAME             = C:\Programacao\_MinhasBibliotecas\paransys2\workingdir\paransys.log.out
+  INITIAL DIRECTORY = C:\Programacao\_MinhasBibliotecas\paransys2\workingdir
+
+ User Link path (ANS_USER_PATH): C:\ANSYS\ArtigoMailson\USERMAT                                                                                                                                                                                                                          
+
+ RELEASE= 2019 R2              BUILD= 19.4      UP20190416   VERSION=WINDOWS x64 
+ CURRENT JOBNAME=file  15:52:13  JUL 02, 2020 CP=      0.344
+ Note - This ANSYS version was linked by Licensee
+     1  /NOPR   
+     2  *CREATE,rewctrl.paransys
+     3  /OUTPUT,control,paransys
+     4  *VWRITE,'PARANSYS_GO=%PARANSYS_GO%' 
+     5  %C  
+     6  *VWRITE,'PARANSYS_RUNS=%PARANSYS_RUNS%' 
+     7  %C  
+     8  *VWRITE,'PARANSYS_DONE=%PARANSYS_DONE%' 
+     9  %C  
+    10  *VWRITE,'PARANSYS_KILL=%PARANSYS_KILL%' 
+    11  %C  
+    12  /OUTPUT 
+    13  *END
+    14  PARANSYS_LOOP=1 
+    15  PARANSYS_RUNS=0 
+    16  *DOWHILE,PARANSYS_LOOP  
+    17  /INPUT,control.paransys 
+    18  *IF,PARANSYS_GO,GE,1,THEN   
+    19  PARANSYS_GO=0   
+    20  PARANSYS_RUNS=PARANSYS_RUNS 
+    21  PARANSYS_DONE=0 
+    22  PARANSYS_KILL=0 
+    23  /INPUT,rewctrl,paransys 
+    24  /DELETE,par_out.paransys,,,BOTH 
+    25  /CLEAR,start.ans
+    26  /INPUT,par_in.paransys  
+    27  /GOPR   
+    28  /INPUT,main.paransys
+    29  /NOPR   
+    30  PARSAV,ALL,par_out.paransys 
+    31  /INPUT,control.paransys 
+    32  PARANSYS_GO=0   
+    33  PARANSYS_RUNS=PARANSYS_RUNS+1   
+    34  PARANSYS_DONE=1 
+    35  PARANSYS_KILL=0 
+    36  /INPUT,rewctrl,paransys 
+    37  *ELSEIF,PARANSYS_KILL,GE,1,THEN 
+    38  /DELETE,control.paransys,,,BOTH 
+    39  *EXIT   
+    40  *ENDIF  
+    41  PARANSYS_LOOP=1 
+    42  /WAIT,0.5   
+    43  *ENDDO  
+
+ RUN SETUP PROCEDURE FROM FILE= C:\Program Files\ANSYS Inc\v194\ANSYS\apdl\start.ans
+
+ /INPUT FILE= C:\Program Files\ANSYS Inc\v194\ANSYS\apdl\start.ans  LINE=       0
+
+ CLEAR DATABASE AND RERUN START.ANS
+
+ RUN SETUP PROCEDURE FROM FILE= C:\Program Files\ANSYS Inc\v194\ANSYS\apdl\start.ans
+
+ ANSYS Mechanical Enterprise                       
+
+ /INPUT FILE= main.paransys  LINE=       0
+
+ /INPUT FILE= cant.inp  LINE=       0
+
+ PARAMETER B =     4.000000000    
+
+ PARAMETER H =     1.000000000    
+
+ PARAMETER L =     60.00000000    
+
+ PARAMETER Q =     1.150000000    
+
+ PARAMETER E =     2000000.000    
+
+ PARAMETER V =    0.2600000000    
+
+ PARAMETER NDIV =     20.00000000    
+
+ *** ANSYS - ENGINEERING ANALYSIS SYSTEM  RELEASE 2019 R2          19.4     ***
+ ANSYS Mechanical Enterprise                       
+ 20120530  VERSION=WINDOWS x64   15:52:14  JUL 02, 2020 CP=      0.453
+
+                                                                               
+
+
+
+          ***** ANSYS ANALYSIS DEFINITION (PREP7) *****
+
+ ELEMENT TYPE       1 IS BEAM189      3-D 3-NODE BEAM             
+  KEYOPT( 1- 6)=        0      0      0        0      0      0
+  KEYOPT( 7-12)=        0      0      0        0      0      0
+  KEYOPT(13-18)=        0      0      0        0      0      0
+
+ CURRENT NODAL DOF SET IS  UX    UY    UZ    ROTX  ROTY  ROTZ
+  THREE-DIMENSIONAL MODEL
+
+ TEMPERATURE TABLE ERASED.
+
+ *** PROPERTY TEMPERATURE TABLE    NUM. TEMPS=  1 ***
+ SLOC=   1     0.000000    
+
+ PROPERTY TABLE EX    MAT=      1  NUM. POINTS=  1
+ SLOC=   1     2000000.    
+
+ PROPERTY TABLE PRXY  MAT=      1  NUM. POINTS=  1
+ SLOC=   1    0.2600000    
+                                   
+   INPUT SECTION ID NUMBER                1
+   INPUT SECTION TYPE                 BEAM
+   INPUT BEAM SECTION SUBTYPE         Rectangle       
+   INPUT BEAM SECTION NAME            1       
+         
+   BEAM SECTION WITH SECTION ID NUMBER      1 IS OFFSET TO CENTROID
+                     
+   SECTION ID NUMBER IS:         1
+   BEAM SECTION TYPE IS:     Rectangle       
+   BEAM SECTION NAME IS:     1       
+   COMPUTED BEAM SECTION DATA SUMMARY:
+    Area                 =  4.0000    
+    Iyy                  =  5.3333    
+    Iyz                  =-0.52042E-17
+    Izz                  = 0.33333    
+    Warping Constant     = 0.34604    
+    Torsion Constant     =  1.1780    
+    Centroid Y           = 0.26563E-16
+    Centroid Z           =-0.56812E-16
+    Shear Center Y       = 0.40301E-13
+    Shear Center Z       =-0.27706E-14
+    Shear Correction-xy  = 0.93410    
+    Shear Correction-yz  = 0.20809E-14
+    Shear Correction-xz  = 0.93410    
+                 
+    Beam Section is offset to CENTROID of cross section
+
+ KEYPOINT      1   X,Y,Z=   0.00000       0.00000       0.00000      IN CSYS=  0
+
+ KEYPOINT      2   X,Y,Z=   60.0000       0.00000       0.00000      IN CSYS=  0
+
+ LINE CONNECTS KEYPOINTS      1     2
+  LINE NO.=     1  KP1=      1  TAN1=   -1.0000   0.0000   0.0000
+                   KP2=      2  TAN2=    1.0000   0.0000   0.0000
+
+ ELEMENT TYPE SET TO         1
+
+ MATERIAL NUMBER SET TO         1
+
+ ELEMENT COORDINATE SYSTEM IS AS DEFINED FOR THE ELEMENTS.
+ (NOTE- FOR GLOBAL SYSTEM  0  (CARTESIAN), DEFINE
+ LOCAL CARTESIAN SYSTEM  (LOCAL,N,0)  AND USE ESYS,N.)
+
+ SECTION ID NUMBER=        1
+
+ DEACTIVATE SMART SIZING
+
+ SET DIVISIONS ON ALL SELECTED LINES
+      TO  NDIV =   20,  SPACING RATIO =   1.000
+      (KFORCE = 1      PREVIOUS NONZERO VALUES WILL BE ALTERED)
+ NDIV AND SPACE CAN BE OVERRIDDEN FOR CURVATURE OR PROXIMITY
+
+ GENERATE NODES AND ELEMENTS
+       ON LINES         1  TO      1  IN STEPS OF      1
+
+ NUMBER OF LINES MESHED     =         1
+ MAXIMUM NODE NUMBER        =        41
+ MAXIMUM ELEMENT NUMBER     =        20
+
+ SELECT ALL ENTITIES OF TYPE= ALL  AND BELOW
+
+ SPECIFIED CONSTRAINT UZ   FOR SELECTED NODES            1 TO          41 BY           1
+ REAL=  0.00000000       IMAG=  0.00000000    
+
+ SELECT       FOR ITEM=LOC  COMPONENT=X     BETWEEN  0.0000     AND   0.0000    
+   KABS=  0.  TOLERANCE= 0.100000E-05
+
+          1  NODES (OF         41  DEFINED) SELECTED BY  NSEL  COMMAND.
+
+ SPECIFIED CONSTRAINT UX   FOR SELECTED NODES            1 TO          41 BY           1
+ REAL=  0.00000000       IMAG=  0.00000000    
+ ADDITIONAL DOFS=  UY    UZ    ROTX  ROTY  ROTZ
+
+ SELECT ALL ENTITIES OF TYPE= ALL  AND BELOW
+
+ SPECIFIED SURFACE LOAD PRES FOR ALL SELECTED BEAM ELEMENTS   LKEY = 2
+     VALI,VALJ     =     1.1500         1.1500    
+
+
+ ***** ROUTINE COMPLETED *****  CP =         0.453
+
+
+
+ *****  ANSYS SOLUTION ROUTINE  *****
+
+
+ PERFORM A STATIC ANALYSIS
+  THIS WILL BE A NEW ANALYSIS
+
+ SMALL DEFORMATION ANALYSIS
+
+ USE AUTOMATIC TIME STEPPING THIS LOAD STEP
+
+ WRITE ALL  ITEMS TO THE DATABASE WITH A FREQUENCY OF ALL 
+   FOR ALL APPLICABLE ENTITIES
+
+ CONVERGENCE ON F    BASED ON THE NORM OF THE N-R LOAD
+   WITH A TOLERANCE OF 0.1000E-01 AND A MINIMUM REFERENCE VALUE OF 0.1000E-01
+   USING THE L2 NORM (CHECK THE SRSS VALUE)
+
+ CONVERGENCE ON U    BASED ON THE NORM OF THE TOTAL
+   WITH A TOLERANCE OF 0.1000E-01 AND A MINIMUM REFERENCE VALUE OF 0.1000E-01
+   USING THE L2 NORM (CHECK THE SRSS VALUE)
+
+ KEY TO TERMINATE RUN IF NO CONVERGENCE=  2
+ DEGREE OF FREEDOM (DISPLACEMENT) LIMIT=  5000.0    
+ CUMULATIVE ITERATION LIMIT=     0
+ ELAPSED TIME LIMIT (SEC)=  0.0000       (  0 HOURS  0 MIN)
+ CPU TIME LIMIT (SEC)=  0.0000       (  0 HOURS  0 MIN)
+
+ SELECT ALL ENTITIES OF TYPE= ALL  AND BELOW
+
+ *****  ANSYS SOLVE    COMMAND  *****
+
+ *** NOTE ***                            CP =       0.453   TIME= 15:52:14
+ There is no title defined for this analysis.                            
+
+ *** SELECTION OF ELEMENT TECHNOLOGIES FOR APPLICABLE ELEMENTS ***
+                ---GIVE SUGGESTIONS ONLY---
+
+ ELEMENT TYPE    1 IS BEAM189 . KEYOPT(1)=1 IS SUGGESTED FOR NON-CIRCULAR CROSS
+ SECTIONS.
+
+ ELEMENT TYPE    1 IS BEAM189 . KEYOPT(15) IS ALREADY SET AS SUGGESTED.
+
+
+
+ *** ANSYS - ENGINEERING ANALYSIS SYSTEM  RELEASE 2019 R2          19.4     ***
+ ANSYS Mechanical Enterprise                       
+ 20120530  VERSION=WINDOWS x64   15:52:14  JUL 02, 2020 CP=      0.453
+
+                                                                               
+
+
+
+                       S O L U T I O N   O P T I O N S
+
+   PROBLEM DIMENSIONALITY. . . . . . . . . . . . .3-D                  
+   DEGREES OF FREEDOM. . . . . . UX   UY   UZ   ROTX ROTY ROTZ
+   ANALYSIS TYPE . . . . . . . . . . . . . . . . .STATIC (STEADY-STATE)
+   GLOBALLY ASSEMBLED MATRIX . . . . . . . . . . .SYMMETRIC  
+
+ *** NOTE ***                            CP =       0.453   TIME= 15:52:14
+ Present time 0 is less than or equal to the previous time.  Time will   
+ default to 1.                                                           
+
+ *** NOTE ***                            CP =       0.453   TIME= 15:52:14
+ The conditions for direct assembly have been met.  No .emat or .erot    
+ files will be produced.                                                 
+
+                      L O A D   S T E P   O P T I O N S
+
+   LOAD STEP NUMBER. . . . . . . . . . . . . . . .     1
+   TIME AT END OF THE LOAD STEP. . . . . . . . . .  1.0000    
+   AUTOMATIC TIME STEPPING . . . . . . . . . . . .    ON
+      INITIAL NUMBER OF SUBSTEPS . . . . . . . . .     0
+      MAXIMUM NUMBER OF SUBSTEPS . . . . . . . . .     0
+      MINIMUM NUMBER OF SUBSTEPS . . . . . . . . .     1
+   STEP CHANGE BOUNDARY CONDITIONS . . . . . . . .    NO
+   PRINT OUTPUT CONTROLS . . . . . . . . . . . . .NO PRINTOUT
+   DATABASE OUTPUT CONTROLS
+      ITEM     FREQUENCY   COMPONENT
+       ALL        ALL               
+
+
+ SOLUTION MONITORING INFO IS WRITTEN TO FILE= file.mntr                                                                                                                                                                                                                                                           
+
+ *** NOTE ***                            CP =       0.500   TIME= 15:52:14
+ Predictor is ON by default for structural elements with rotational      
+ degrees of freedom.  Use the PRED,OFF command to turn the predictor     
+ OFF if it adversely affects the convergence.                            
+
+
+ Range of element maximum matrix coefficients in global coordinates
+ Maximum = 22916792.3 at element 20.                                     
+ Minimum = 22916792.3 at element 19.                                     
+
+   *** ELEMENT MATRIX FORMULATION TIMES
+     TYPE    NUMBER   ENAME      TOTAL CP  AVE CP
+
+        1        20  BEAM189       0.000   0.000000
+ Time at end of element matrix formulation CP = 0.5.                     
+
+ SPARSE MATRIX DIRECT SOLVER.
+  Number of equations =         200,    Maximum wavefront =     24
+  Memory allocated for solver              =     0.147 MB
+  Memory required for in-core solution     =     0.143 MB
+  Memory required for out-of-core solution =     0.143 MB
+
+ *** NOTE ***                            CP =       0.562   TIME= 15:52:14
+ The Sparse Matrix Solver is currently running in the in-core memory     
+ mode.  This memory mode uses the most amount of memory in order to      
+ avoid using the hard drive as much as possible, which most often        
+ results in the fastest solution time.  This mode is recommended if      
+ enough physical memory is present to accommodate all of the solver      
+ data.                                                                   
+ Sparse solver maximum pivot= 22916792.3 at node 23 ROTY.                
+ Sparse solver minimum pivot= 87.6746844 at node 32 UY.                  
+ Sparse solver minimum pivot in absolute value= 87.6746844 at node 32    
+ UY.                                                                     
+
+   *** ELEMENT RESULT CALCULATION TIMES
+     TYPE    NUMBER   ENAME      TOTAL CP  AVE CP
+
+        1        20  BEAM189       0.000   0.000000
+
+   *** NODAL LOAD CALCULATION TIMES
+     TYPE    NUMBER   ENAME      TOTAL CP  AVE CP
+
+        1        20  BEAM189       0.000   0.000000
+ *** LOAD STEP     1   SUBSTEP     1  COMPLETED.    CUM ITER =      1
+ *** TIME =   1.00000         TIME INC =   1.00000      NEW TRIANG MATRIX
+
+
+ *** ANSYS BINARY FILE STATISTICS
+  BUFFER SIZE USED= 16384
+        0.062 MB WRITTEN ON ASSEMBLED MATRIX FILE: file.full
+        0.375 MB WRITTEN ON RESULTS FILE: file.rst
+
+ ELEMENT DISPLAYS USING REAL CONSTANT OR SECTION DATA WITH FACTOR     1.00
+
+ *** NOTE *** Display device has not yet been specified with the /SHOW command.  Display commands ignored. 
+
+ FINISH SOLUTION PROCESSING
+
+
+ ***** ROUTINE COMPLETED *****  CP =         0.719
+
+
+
+ *** ANSYS - ENGINEERING ANALYSIS SYSTEM  RELEASE 2019 R2          19.4     ***
+ ANSYS Mechanical Enterprise                       
+ 20120530  VERSION=WINDOWS x64   15:52:14  JUL 02, 2020 CP=      0.750
+
+                                                                               
+
+
+
+          ***** ANSYS RESULTS INTERPRETATION (POST1) *****
+
+ *** NOTE ***                            CP =       0.750   TIME= 15:52:14
+ Reading results into the database (SET command) will update the current 
+ displacement and force boundary conditions in the database with the     
+ values from the results file for that load set.  Note that any          
+ subsequent solutions will use these values unless action is taken to    
+ either SAVE the current values or not overwrite them (/EXIT,NOSAVE).    
+
+
+ USE LAST SUBSTEP ON RESULT FILE  FOR LOAD CASE 0 
+
+ SET COMMAND GOT LOAD STEP=     1  SUBSTEP=     1  CUMULATIVE ITERATION=     1
+   TIME/FREQUENCY=  1.0000    
+ TITLE=                                                                         
+
+ EXIT THE ANSYS POST1 DATABASE PROCESSOR
+
+
+ ***** ROUTINE COMPLETED *****  CP =         0.766
+
+
+
+ *** ANSYS - ENGINEERING ANALYSIS SYSTEM  RELEASE 2019 R2          19.4     ***
+ ANSYS Mechanical Enterprise                       
+ 20120530  VERSION=WINDOWS x64   15:52:15  JUL 02, 2020 CP=      0.797
+
+                                                                               
+
+
+
+
+          ***** TIME-HISTORY POSTPROCESSOR (POST26) *****
+
+ ALL POST26 SPECIFICATIONS ARE RESET TO INITIAL DEFAULTS
+
+ MAXIMUM NUMBER OF VARIABLES=200
+
+ *** WARNING ***                         CP =       0.812   TIME= 15:52:15
+ No data points are saved during this storage step.                      
+
+ *GET  STRESS    FROM ELEMENT      1 S    X    MAX    VALUE=   3103.70654    
+
+   AT ELEMENT NODE I
+
+
+ ***** ROUTINE COMPLETED *****  CP =         0.891
+
+
+
+ CLEAR DATABASE AND RERUN START.ANS
+
+ RUN SETUP PROCEDURE FROM FILE= C:\Program Files\ANSYS Inc\v194\ANSYS\apdl\start.ans
+
+ ANSYS Mechanical Enterprise                       
+
+
+ ***** ROUTINE COMPLETED *****  CP =         0.938
+
+
+
+ /INPUT FILE= main.paransys  LINE=       0
+
+ /INPUT FILE= cant.inp  LINE=       0
+
+ PARAMETER B =     4.000000000    
+
+ PARAMETER H =     1.000000000    
+
+ PARAMETER L =     60.00000000    
+
+ PARAMETER Q =     1.150000000    
+
+ PARAMETER E =     2000000.000    
+
+ PARAMETER V =    0.2600000000    
+
+ PARAMETER NDIV =     20.00000000    
+
+ *** ANSYS - ENGINEERING ANALYSIS SYSTEM  RELEASE 2019 R2          19.4     ***
+ ANSYS Mechanical Enterprise                       
+ 20120530  VERSION=WINDOWS x64   15:54:00  JUL 02, 2020 CP=      0.938
+
+                                                                               
+
+
+
+          ***** ANSYS ANALYSIS DEFINITION (PREP7) *****
+
+ ELEMENT TYPE       1 IS BEAM189      3-D 3-NODE BEAM             
+  KEYOPT( 1- 6)=        0      0      0        0      0      0
+  KEYOPT( 7-12)=        0      0      0        0      0      0
+  KEYOPT(13-18)=        0      0      0        0      0      0
+
+ CURRENT NODAL DOF SET IS  UX    UY    UZ    ROTX  ROTY  ROTZ
+  THREE-DIMENSIONAL MODEL
+
+ TEMPERATURE TABLE ERASED.
+
+ *** PROPERTY TEMPERATURE TABLE    NUM. TEMPS=  1 ***
+ SLOC=   1     0.000000    
+
+ PROPERTY TABLE EX    MAT=      1  NUM. POINTS=  1
+ SLOC=   1     2000000.    
+
+ PROPERTY TABLE PRXY  MAT=      1  NUM. POINTS=  1
+ SLOC=   1    0.2600000    
+                                   
+   INPUT SECTION ID NUMBER                1
+   INPUT SECTION TYPE                 BEAM
+   INPUT BEAM SECTION SUBTYPE         Rectangle       
+   INPUT BEAM SECTION NAME            1       
+         
+   BEAM SECTION WITH SECTION ID NUMBER      1 IS OFFSET TO CENTROID
+                     
+   SECTION ID NUMBER IS:         1
+   BEAM SECTION TYPE IS:     Rectangle       
+   BEAM SECTION NAME IS:     1       
+   COMPUTED BEAM SECTION DATA SUMMARY:
+    Area                 =  4.0000    
+    Iyy                  =  5.3333    
+    Iyz                  =-0.52042E-17
+    Izz                  = 0.33333    
+    Warping Constant     = 0.34604    
+    Torsion Constant     =  1.1780    
+    Centroid Y           = 0.26563E-16
+    Centroid Z           =-0.56812E-16
+    Shear Center Y       = 0.40301E-13
+    Shear Center Z       =-0.27706E-14
+    Shear Correction-xy  = 0.93410    
+    Shear Correction-yz  = 0.20809E-14
+    Shear Correction-xz  = 0.93410    
+                 
+    Beam Section is offset to CENTROID of cross section
+
+ KEYPOINT      1   X,Y,Z=   0.00000       0.00000       0.00000      IN CSYS=  0
+
+ KEYPOINT      2   X,Y,Z=   60.0000       0.00000       0.00000      IN CSYS=  0
+
+ LINE CONNECTS KEYPOINTS      1     2
+  LINE NO.=     1  KP1=      1  TAN1=   -1.0000   0.0000   0.0000
+                   KP2=      2  TAN2=    1.0000   0.0000   0.0000
+
+ ELEMENT TYPE SET TO         1
+
+ MATERIAL NUMBER SET TO         1
+
+ ELEMENT COORDINATE SYSTEM IS AS DEFINED FOR THE ELEMENTS.
+ (NOTE- FOR GLOBAL SYSTEM  0  (CARTESIAN), DEFINE
+ LOCAL CARTESIAN SYSTEM  (LOCAL,N,0)  AND USE ESYS,N.)
+
+ SECTION ID NUMBER=        1
+
+ DEACTIVATE SMART SIZING
+
+ SET DIVISIONS ON ALL SELECTED LINES
+      TO  NDIV =   20,  SPACING RATIO =   1.000
+      (KFORCE = 1      PREVIOUS NONZERO VALUES WILL BE ALTERED)
+ NDIV AND SPACE CAN BE OVERRIDDEN FOR CURVATURE OR PROXIMITY
+
+ GENERATE NODES AND ELEMENTS
+       ON LINES         1  TO      1  IN STEPS OF      1
+
+ NUMBER OF LINES MESHED     =         1
+ MAXIMUM NODE NUMBER        =        41
+ MAXIMUM ELEMENT NUMBER     =        20
+
+ SELECT ALL ENTITIES OF TYPE= ALL  AND BELOW
+
+ SPECIFIED CONSTRAINT UZ   FOR SELECTED NODES            1 TO          41 BY           1
+ REAL=  0.00000000       IMAG=  0.00000000    
+
+ SELECT       FOR ITEM=LOC  COMPONENT=X     BETWEEN  0.0000     AND   0.0000    
+   KABS=  0.  TOLERANCE= 0.100000E-05
+
+          1  NODES (OF         41  DEFINED) SELECTED BY  NSEL  COMMAND.
+
+ SPECIFIED CONSTRAINT UX   FOR SELECTED NODES            1 TO          41 BY           1
+ REAL=  0.00000000       IMAG=  0.00000000    
+ ADDITIONAL DOFS=  UY    UZ    ROTX  ROTY  ROTZ
+
+ SELECT ALL ENTITIES OF TYPE= ALL  AND BELOW
+
+ SPECIFIED SURFACE LOAD PRES FOR ALL SELECTED BEAM ELEMENTS   LKEY = 2
+     VALI,VALJ     =     1.1500         1.1500    
+
+
+ ***** ROUTINE COMPLETED *****  CP =         0.938
+
+
+
+ *****  ANSYS SOLUTION ROUTINE  *****
+
+
+ PERFORM A STATIC ANALYSIS
+  THIS WILL BE A NEW ANALYSIS
+
+ SMALL DEFORMATION ANALYSIS
+
+ USE AUTOMATIC TIME STEPPING THIS LOAD STEP
+
+ WRITE ALL  ITEMS TO THE DATABASE WITH A FREQUENCY OF ALL 
+   FOR ALL APPLICABLE ENTITIES
+
+ CONVERGENCE ON F    BASED ON THE NORM OF THE N-R LOAD
+   WITH A TOLERANCE OF 0.1000E-01 AND A MINIMUM REFERENCE VALUE OF 0.1000E-01
+   USING THE L2 NORM (CHECK THE SRSS VALUE)
+
+ CONVERGENCE ON U    BASED ON THE NORM OF THE TOTAL
+   WITH A TOLERANCE OF 0.1000E-01 AND A MINIMUM REFERENCE VALUE OF 0.1000E-01
+   USING THE L2 NORM (CHECK THE SRSS VALUE)
+
+ KEY TO TERMINATE RUN IF NO CONVERGENCE=  2
+ DEGREE OF FREEDOM (DISPLACEMENT) LIMIT=  5000.0    
+ CUMULATIVE ITERATION LIMIT=     0
+ ELAPSED TIME LIMIT (SEC)=  0.0000       (  0 HOURS  0 MIN)
+ CPU TIME LIMIT (SEC)=  0.0000       (  0 HOURS  0 MIN)
+
+ SELECT ALL ENTITIES OF TYPE= ALL  AND BELOW
+
+ *****  ANSYS SOLVE    COMMAND  *****
+
+ *** NOTE ***                            CP =       0.938   TIME= 15:54:00
+ There is no title defined for this analysis.                            
+
+ *** SELECTION OF ELEMENT TECHNOLOGIES FOR APPLICABLE ELEMENTS ***
+                ---GIVE SUGGESTIONS ONLY---
+
+ ELEMENT TYPE    1 IS BEAM189 . KEYOPT(1)=1 IS SUGGESTED FOR NON-CIRCULAR CROSS
+ SECTIONS.
+
+ ELEMENT TYPE    1 IS BEAM189 . KEYOPT(15) IS ALREADY SET AS SUGGESTED.
+
+
+
+ *** ANSYS - ENGINEERING ANALYSIS SYSTEM  RELEASE 2019 R2          19.4     ***
+ ANSYS Mechanical Enterprise                       
+ 20120530  VERSION=WINDOWS x64   15:54:00  JUL 02, 2020 CP=      0.938
+
+                                                                               
+
+
+
+                       S O L U T I O N   O P T I O N S
+
+   PROBLEM DIMENSIONALITY. . . . . . . . . . . . .3-D                  
+   DEGREES OF FREEDOM. . . . . . UX   UY   UZ   ROTX ROTY ROTZ
+   ANALYSIS TYPE . . . . . . . . . . . . . . . . .STATIC (STEADY-STATE)
+   GLOBALLY ASSEMBLED MATRIX . . . . . . . . . . .SYMMETRIC  
+
+ *** NOTE ***                            CP =       0.938   TIME= 15:54:00
+ Present time 0 is less than or equal to the previous time.  Time will   
+ default to 1.                                                           
+
+ *** NOTE ***                            CP =       0.938   TIME= 15:54:00
+ The conditions for direct assembly have been met.  No .emat or .erot    
+ files will be produced.                                                 
+
+                      L O A D   S T E P   O P T I O N S
+
+   LOAD STEP NUMBER. . . . . . . . . . . . . . . .     1
+   TIME AT END OF THE LOAD STEP. . . . . . . . . .  1.0000    
+   AUTOMATIC TIME STEPPING . . . . . . . . . . . .    ON
+      INITIAL NUMBER OF SUBSTEPS . . . . . . . . .     0
+      MAXIMUM NUMBER OF SUBSTEPS . . . . . . . . .     0
+      MINIMUM NUMBER OF SUBSTEPS . . . . . . . . .     1
+   STEP CHANGE BOUNDARY CONDITIONS . . . . . . . .    NO
+   PRINT OUTPUT CONTROLS . . . . . . . . . . . . .NO PRINTOUT
+   DATABASE OUTPUT CONTROLS
+      ITEM     FREQUENCY   COMPONENT
+       ALL        ALL               
+
+
+ SOLUTION MONITORING INFO IS WRITTEN TO FILE= file.mntr                                                                                                                                                                                                                                                           
+
+ *** NOTE ***                            CP =       0.953   TIME= 15:54:00
+ Predictor is ON by default for structural elements with rotational      
+ degrees of freedom.  Use the PRED,OFF command to turn the predictor     
+ OFF if it adversely affects the convergence.                            
+
+
+ Range of element maximum matrix coefficients in global coordinates
+ Maximum = 22916792.3 at element 20.                                     
+ Minimum = 22916792.3 at element 19.                                     
+
+   *** ELEMENT MATRIX FORMULATION TIMES
+     TYPE    NUMBER   ENAME      TOTAL CP  AVE CP
+
+        1        20  BEAM189       0.000   0.000000
+ Time at end of element matrix formulation CP = 0.953125.                
+
+ SPARSE MATRIX DIRECT SOLVER.
+  Number of equations =         200,    Maximum wavefront =     24
+  Memory allocated for solver              =     0.147 MB
+  Memory required for in-core solution     =     0.143 MB
+  Memory required for out-of-core solution =     0.143 MB
+
+ *** NOTE ***                            CP =       0.984   TIME= 15:54:00
+ The Sparse Matrix Solver is currently running in the in-core memory     
+ mode.  This memory mode uses the most amount of memory in order to      
+ avoid using the hard drive as much as possible, which most often        
+ results in the fastest solution time.  This mode is recommended if      
+ enough physical memory is present to accommodate all of the solver      
+ data.                                                                   
+ Sparse solver maximum pivot= 22916792.3 at node 23 ROTY.                
+ Sparse solver minimum pivot= 87.6746844 at node 32 UY.                  
+ Sparse solver minimum pivot in absolute value= 87.6746844 at node 32    
+ UY.                                                                     
+
+   *** ELEMENT RESULT CALCULATION TIMES
+     TYPE    NUMBER   ENAME      TOTAL CP  AVE CP
+
+        1        20  BEAM189       0.000   0.000000
+
+   *** NODAL LOAD CALCULATION TIMES
+     TYPE    NUMBER   ENAME      TOTAL CP  AVE CP
+
+        1        20  BEAM189       0.000   0.000000
+ *** LOAD STEP     1   SUBSTEP     1  COMPLETED.    CUM ITER =      1
+ *** TIME =   1.00000         TIME INC =   1.00000      NEW TRIANG MATRIX
+
+
+ *** ANSYS BINARY FILE STATISTICS
+  BUFFER SIZE USED= 16384
+        0.062 MB WRITTEN ON ASSEMBLED MATRIX FILE: file.full
+        0.375 MB WRITTEN ON RESULTS FILE: file.rst
+
+ ELEMENT DISPLAYS USING REAL CONSTANT OR SECTION DATA WITH FACTOR     1.00
+
+ *** NOTE *** Display device has not yet been specified with the /SHOW command.  Display commands ignored. 
+
+ FINISH SOLUTION PROCESSING
+
+
+ ***** ROUTINE COMPLETED *****  CP =         1.078
+
+
+
+ *** ANSYS - ENGINEERING ANALYSIS SYSTEM  RELEASE 2019 R2          19.4     ***
+ ANSYS Mechanical Enterprise                       
+ 20120530  VERSION=WINDOWS x64   15:54:00  JUL 02, 2020 CP=      1.078
+
+                                                                               
+
+
+
+          ***** ANSYS RESULTS INTERPRETATION (POST1) *****
+
+
+ USE LAST SUBSTEP ON RESULT FILE  FOR LOAD CASE 0 
+
+ SET COMMAND GOT LOAD STEP=     1  SUBSTEP=     1  CUMULATIVE ITERATION=     1
+   TIME/FREQUENCY=  1.0000    
+ TITLE=                                                                         
+
+ EXIT THE ANSYS POST1 DATABASE PROCESSOR
+
+
+ ***** ROUTINE COMPLETED *****  CP =         1.094
+
+
+
+ *** ANSYS - ENGINEERING ANALYSIS SYSTEM  RELEASE 2019 R2          19.4     ***
+ ANSYS Mechanical Enterprise                       
+ 20120530  VERSION=WINDOWS x64   15:54:00  JUL 02, 2020 CP=      1.094
+
+                                                                               
+
+
+
+
+          ***** TIME-HISTORY POSTPROCESSOR (POST26) *****
+
+ ALL POST26 SPECIFICATIONS ARE RESET TO INITIAL DEFAULTS
+
+ MAXIMUM NUMBER OF VARIABLES=200
+
+ *** WARNING ***                         CP =       1.094   TIME= 15:54:00
+ No data points are saved during this storage step.                      
+
+ *GET  STRESS    FROM ELEMENT      1 S    X    MAX    VALUE=   3103.70654    
+
+   AT ELEMENT NODE I
+
+ ***** END OF INPUT ENCOUNTERED *****
+
+
+ NUMBER OF WARNING MESSAGES ENCOUNTERED=          2
+ NUMBER OF ERROR   MESSAGES ENCOUNTERED=          0
+
+
+
+ ***** PROBLEM TERMINATED BY INDICATED ERROR(S) OR BY END OF INPUT DATA *****
+
++--------------------- A N S Y S   S T A T I S T I C S ------------------------+
+
+Release: 2019 R2            Build: 19.4       Update: UP20190416   Platform: WINDOWS x64 
+Date Run: 07/02/2020   Time: 15:54     Process ID: 1252
+Operating System: Windows 10  (Build: 18363)
+
+Processor Model: Intel(R) Core(TM) i7-4710MQ CPU @ 2.50GHz
+
+Compiler: Intel(R) FORTRAN Compiler Version 17.0.6  (Build: 20171215)
+          Intel(R) C/C++ Compiler Version 17.0.6  (Build: 20171215)
+          Intel(R) Math Kernel Library Version 2017.0.3 Product Build 20170413
+
+Number of machines requested            :    1
+Total number of cores available         :    8
+Number of physical cores available      :    4
+Number of processes requested           :    1
+Number of threads per process requested :    2
+Total number of cores requested         :    2 (Shared Memory Parallel)                    
+
+GPU Acceleration: Not Requested
+
+Job Name: file
+Input File: monitor.paransys
+Working Directory: C:\Programacao\_MinhasBibliotecas\paransys2
+
+Total CPU time for main thread                    :        0.8 seconds
+Total CPU time summed for all threads             :        1.2 seconds
+
+Elapsed time spent pre-processing model (/PREP7)  :        0.2 seconds
+Elapsed time spent solution - preprocessing       :        0.1 seconds
+Elapsed time spent computing solution             :        0.3 seconds
+Elapsed time spent solution - postprocessing      :        0.0 seconds
+Elapsed time spent post-processing model (/POST1) :        0.0 seconds
+Elapsed time spent post-processing model (/POST26):      105.4 seconds
+ 
+Equation solver used                              :            Sparse (symmetric)
+Equation solver effective I/O rate                :        0.4 GB/sec
+
+Maximum total memory used                         :       36.0 MB
+Maximum total memory allocated                    :     2112.0 MB
+Total physical memory available                   :          8 GB
+
+Total amount of I/O written to disk               :        0.0 GB
+Total amount of I/O read from disk                :        0.0 GB
+
++------------------ E N D   A N S Y S   S T A T I S T I C S -------------------+
+
+
+ *---------------------------------------------------------------------------*
+ |                                                                           |
+ |                            ANSYS RUN COMPLETED                            |
+ |                                                                           |
+ |---------------------------------------------------------------------------|
+ |                                                                           |
+ | Ansys 2019 R2               Build 19.4         UP20190416     WINDOWS x64 |
+ |                                                                           |
+ |---------------------------------------------------------------------------|
+ |                                                                           |
+ | Database Requested(-db)  1024 MB    Scratch Memory Requested      1024 MB |
+ | Maximum Database Used       1 MB    Maximum Scratch Memory Used     35 MB |
+ |                                                                           |
+ |---------------------------------------------------------------------------|
+ |                                                                           |
+ |        CP Time      (sec) =          1.250       Time  =  15:54:01        |
+ |        Elapsed Time (sec) =        110.000       Date  =  07/02/2020      |
+ |                                                                           |
+ *---------------------------------------------------------------------------*

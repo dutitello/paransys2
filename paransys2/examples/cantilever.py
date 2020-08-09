@@ -56,4 +56,4 @@ def cantilever():
 
     # Another explanations
     print('''\n\nThis example used solve() function.
-    You should also take a look at the grad_cantilever example, where the grad() function is presented.\n\n''')
+    You should also take a look at the deriv_cantilever example, where the derivatives() function is presented.\n\n''')

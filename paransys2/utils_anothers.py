@@ -22,9 +22,9 @@ def to_upper(thing):
         return thing
         
 
-def grad_progress(self, parameter, parin):
+def deriv_progress(self, parameter, parin):
     """
-    Found how much of grad is complete.
+    Found how much of derivatives is complete.
 
     Args:
         parameter (str): Current parameter.
@@ -35,7 +35,7 @@ def grad_progress(self, parameter, parin):
         i += 1
         if each == parameter:
             done = i/len(parin)
-            utils.messages.cprint(self, 'Gradient {:.2%} evaluated.'.format(done))
+            utils.messages.cprint(self, 'Derivatives {:.2%} evaluated.'.format(done))
 
 
 def str2num(strin):

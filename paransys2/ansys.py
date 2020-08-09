@@ -147,23 +147,23 @@ class ANSYS:
         return parameters, p26df
         
 
-    def grad(self, dh=0.05, method='forward', onlyfor=[], notfor=[], **parin):
+    def derivatives(self, dh=0.05, method='forward', onlyfor=[], notfor=[], **parin):
         """
-        Evaluate the gradient of all output parameters in relation to input parameters using the finite difference method.
+        Evaluate the derivatives of all output parameters with respect to input parameters using the finite difference method.
 
-        By default the gradient is evaluate in relation of all input parameters, if you need to evaluate just for some specific
+        By default the derivatives are evaluate with respect to all input parameters, if you need to evaluate just for some specific
         parameters you can put it's names in `onlyfor` list. In the other hand, if you need all but not for some 
         specific you can put it's name on `notfor` list. It looks confuse, I know... So there are more explanations  
-        and examples at `/examples/grad.ipynb`.
+        and examples at `paransys2/examples` folder.
 
 
         There are 3 possible difference methods here, in all it's adopted that: `h = x.dh`
 
-        The forward method: `f\'(x) = (f(x+h)-f(x))/h`
+        The `forward` method: `f\'(x) = (f(x+h)-f(x))/h`
 
-        The backward method: `f\'(x) = (f(x)-f(x-h))/h`
+        The `backward` method: `f\'(x) = (f(x)-f(x-h))/h`
 
-        The central method: `f\'(x) = (f(x+h/2)-f(x-h/2))/h`
+        The `central` method: `f\'(x) = (f(x+h/2)-f(x-h/2))/h`
 
         The forward and backward methods need to evaluate the function at `f(x)`, so in this cases this result is appendend in the dictionary.
 
@@ -175,14 +175,14 @@ class ANSYS:
             **parin (dict): each model parameter in the form `name=value` or a dictionary with names and values set by **parin.
 
         Returns:
-            dict: A dictionary with the gradient of all output parameters in relation to here inputed parameters.
+            dict: A dictionary with the derivatives of all output parameters in relation to here inputed parameters.
 
-        The gradient returned is in the form `grad('parameter','variable')`, that is, the variation of `parameter` in relation to `variable`. 
+        The derivative returned is in the form `deriv['parameter','variable']`, that is, the variation of `parameter` in relation to `variable`. 
         
         Some examples are:
-        > `dy/dx` = `y'(x)` = `grad('y','x')`
+        > `dy/dx` = `y'(x)` = `deriv('y','x')`
 
-        > `dStress/dh` = `Stress'(h)` = `grad('Stress','h')`
+        > `dStress/dh` = `Stress'(h)` = `deriv('Stress','h')`
 
         """
 
@@ -192,7 +192,7 @@ class ANSYS:
         notfor = utils.anothers.to_upper(notfor)
 
         tstart = time.time()
-        utils.messages.cprint(self, f'Evaluating gradient using {method} method and dh={dh}.')
+        utils.messages.cprint(self, f'Evaluating derivatives using {method} method and dh={dh}.')
         
         if len(onlyfor) > 0:
             evalfor = onlyfor.copy()
@@ -204,20 +204,25 @@ class ANSYS:
             for parameter in notfor:
                 if parameter in evalfor:
                     evalfor.remove(parameter)
-        utils.messages.cprint(self, 'Evaluating gradient in relation to: {}.'.format(', '.join(evalfor)))
+        utils.messages.cprint(self, 'Evaluating derivatives with respect to: {}.'.format(', '.join(evalfor)))
         
         # h couldn't be 0
         def hnotnull(par):
             if par == 0.00: par = 1
             return dh*par
 
-        # Forward and Backward is the same thing just change dh to negative
-        if method in ['forward', 'backward']:
-            if method == 'backward': dh = -dh
+        # Methods names aliases
+        forwardaliases = ['forward', 'forw', 'f']
+        backwardaliases = ['backward', 'backw', 'b']
+        centralaliases = ['central', 'center', 'cent', 'c']
+        
+        # Forward and Backward are the same, just change dh to negative
+        if method in forwardaliases+backwardaliases:
+            if method in backwardaliases: dh = -dh
             # base = f(x)
             utils.messages.cprint(self, 'Solving base function.')
             base, _ = self.solve(**parin)
-            grad = base.copy() # Append f(x)
+            deriv = base.copy() # Append f(x)
             for parameter in evalfor:
                 parcur = parin.copy()
                 h = hnotnull(parin[parameter])
@@ -225,13 +230,13 @@ class ANSYS:
                 utils.messages.cprint(self, f'Solving for {parameter}.')
                 this, _ = self.solve(**parcur)
                 for each in this:
-                    grad[each, parameter] = (this[each]-base[each])/h
-                utils.anothers.grad_progress(self, parameter, evalfor)
+                    deriv[each, parameter] = (this[each]-base[each])/h
+                utils.anothers.deriv_progress(self, parameter, evalfor)
 
 
         # Central method
-        elif method == 'central':
-            grad = {}
+        elif method in centralaliases:
+            deriv = {}
             for parameter in evalfor:
                 parinf = parin.copy()
                 parsup = parin.copy()
@@ -243,8 +248,8 @@ class ANSYS:
                 utils.messages.cprint(self, f'Solving major limit for {parameter}.')
                 major, _ = self.solve(**parsup)
                 for each in minor:
-                    grad[each, parameter] = (major[each]-minor[each])/h
-                utils.anothers.grad_progress(self, parameter, evalfor)
+                    deriv[each, parameter] = (major[each]-minor[each])/h
+                utils.anothers.deriv_progress(self, parameter, evalfor)
 
         # Sometimes life isn't like we expect   
         else:
@@ -252,8 +257,8 @@ class ANSYS:
 
 
         # Thats the end    
-        utils.messages.cprint(self, 'Gradient evaluated in {:.3f} minutes.'.format((time.time()-tstart)/60))
-        return grad
+        utils.messages.cprint(self, 'Derivatives evaluated in {:.3f} minutes.'.format((time.time()-tstart)/60))
+        return deriv
 
 
     def exit(self):

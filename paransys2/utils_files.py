@@ -103,12 +103,7 @@ def is_text_file(fname):
     Returns:
         bool: If text return True, if binary return False
     """
-    try:
-        with open(fname, 'r') as f:
-            _ = f.read()
-            return True
-    except:
-        return False
+    return not(b'\x00' in open(fname, 'rb').read())
 
 
 def create_monitor(self):

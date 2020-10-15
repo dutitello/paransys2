@@ -4,7 +4,7 @@ h = 1
 l = 60
 q = 1.15
 
-! Hasn't many inlfuence
+! Hasn't much inlfuence
 E = 2000000 
 v = 0.26
 ndiv = 20

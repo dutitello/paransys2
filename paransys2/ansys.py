@@ -36,7 +36,7 @@ class ANSYS:
         self._settings = {
             'monitor_wait':     0.5,    # Seconds
             'starter_max_wait':  30,    # Seconds
-            'starter_sleep':    1.0     # Seconds
+            'starter_sleep':    2.0     # Seconds
 
         }
 
